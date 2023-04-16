@@ -75,6 +75,18 @@ public class MyArrayList<T> implements MyList<T> {
                 return i;
             }
         }
+
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        for (int i = length - 1; i >= 0; i--) {
+            if (hiddenArr[i] == o) {
+                return i;
+            }
+        }
+
         return -1;
     }
 
@@ -82,7 +94,7 @@ public class MyArrayList<T> implements MyList<T> {
     public boolean remove(Object o) {
         for (int i = 0; i < length; i++) {
             if (hiddenArr[i] == o) {
-                for (int j = i; j < length; j++) {
+                for (int j = i; j < length - 1; j++) {
                     hiddenArr[j] = hiddenArr[j + 1];
                 }
                 length--;
@@ -100,6 +112,11 @@ public class MyArrayList<T> implements MyList<T> {
         Object object = hiddenArr[index];
         remove(hiddenArr[index]);
         return (T)object;
+    }
+
+    @Override
+    public void clear() {
+        length = 0;
     }
 
 
