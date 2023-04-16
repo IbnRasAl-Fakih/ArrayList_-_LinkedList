@@ -120,6 +120,58 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     @Override
+    public boolean remove(Object o) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.data == o) {
+                if (temp == head) {
+                    temp.next.previous = null;
+                    head = temp.next;
+                } else if (temp == tail) {
+                    temp.previous.next = null;
+                    tail = temp.previous;
+                } else {
+                    temp.previous.next = temp.next;
+                    temp.next.previous = temp.previous;
+                }
+                return true;
+            }
+            temp = temp.next;
+        }
+        return false;
+
+    }
+
+    @Override
+    public T remove(int index) {
+        if (index >= size) throw new IndexOutOfBoundsException();
+        if (index == 0) {
+            Node temp = head;
+            head.next.previous = null;
+            head = head.next;
+            return temp.data;
+        }
+        if (index == size - 1) {
+            Node temp = tail;
+            tail.previous.next = null;
+            tail = tail.previous;
+            return temp.data;
+        }
+        int counter = 0;
+        Node temp = head;
+        while (temp != null) {
+            if (counter == index) {
+                temp.previous.next = temp.next;
+                temp.next.previous = temp.previous;
+                break;
+            }
+            counter++;
+            temp = temp.next;
+        }
+        return temp.data;
+    }
+
+    @Override
     public void clear() {
         head = null;
         size = 0;
