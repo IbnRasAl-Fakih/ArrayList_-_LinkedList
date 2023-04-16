@@ -34,6 +34,18 @@ public class MyArrayList<T> implements MyList<T> {
     }
 
     @Override
+    public void add(T item, int index) {
+        if (index >= length + 1) throw new IndexOutOfBoundsException();
+
+        length++;
+        for (int i = length - 1; i > index; i--) {
+            hiddenArr[i] = hiddenArr[i - 1];
+        }
+        hiddenArr[index] = item;
+
+    }
+
+    @Override
     public T get(int index) {
         if (index >= length) throw new IndexOutOfBoundsException();
 
@@ -44,6 +56,52 @@ public class MyArrayList<T> implements MyList<T> {
     public int size() {
         return length;
     }
+
+    @Override
+    public boolean contains(Object o) {
+        for (var elem: hiddenArr) {
+            if (elem == o) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        for (int i = 0; i < length; i++) {
+            if (hiddenArr[i] == o) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        for (int i = 0; i < length; i++) {
+            if (hiddenArr[i] == o) {
+                for (int j = i; j < length; j++) {
+                    hiddenArr[j] = hiddenArr[j + 1];
+                }
+                length--;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public T remove(int index) {
+        if (index >= length) throw new IndexOutOfBoundsException();
+
+        Object object = hiddenArr[index];
+        remove(hiddenArr[index]);
+        return (T)object;
+    }
+
 
     @Override
     public Iterator<T> iterator() {
