@@ -5,6 +5,8 @@ public interface MyList<T> extends Iterable<T> {
     int size();
     boolean contains(Object o);
     int indexOf(Object o);
+    int lastIndexOf(Object o);
     boolean remove(Object o);
     T remove(int index);
+    void clear();
 }
