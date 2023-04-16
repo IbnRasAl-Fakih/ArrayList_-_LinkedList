@@ -2,40 +2,69 @@ import java.util.Iterator;
 
 public class MyLinkedList<T> implements MyList<T> {
 
-    private class MyNode {
+    private class Node {
         private final T data;
-        private MyNode next;
+        private Node next;
+        private Node previous;
 
-        public MyNode(T data) {
+        public Node(T data) {
             this.data = data;
         }
     }
 
-    private MyNode head; // entry point
-    private int length;
+    private Node head; // entry point
+    private Node tail; // last point
+    private int size;
 
     @Override
     public void add(T item) {
-        MyNode newNode = new MyNode(item);
-        length++;
+        Node newNode = new Node(item);
+        size++;
         if (head == null) {
             head = newNode;
+            tail = newNode;
             return;
         }
-
-        MyNode temp = head;
+        Node temp = head;
         while (temp.next != null) {
             temp = temp.next;
         }
-
         temp.next = newNode;
+        newNode.previous = temp;
+        tail = newNode;
     }
 
-    // O(N)
+    @Override
+    public void add(T item, int index) {
+        size++;
+        if (index >= size) throw new IndexOutOfBoundsException();
+        Node newNode = new Node(item);
+        if (index == 0) {
+            newNode.next = head;
+            head.previous = newNode;
+            head = newNode;
+            return;
+        }
+        Node temp = head;
+        int counter = 1;
+        while (counter != index) {
+            temp = temp.next;
+            counter++;
+        }
+        Node nextNode = temp.next;
+
+        temp.next = newNode;
+        newNode.previous = temp;
+        newNode.next = nextNode;
+        if (nextNode != null) {
+            nextNode.previous = newNode;
+        }
+    }
+
     @Override
     public T get(int index) {
-        if (index >= length) throw new IndexOutOfBoundsException();
-        MyNode temp = head;
+        if (index >= size) throw new IndexOutOfBoundsException();
+        Node temp = head;
         for (int i = 0; i < index; i++) {
             temp = temp.next;
         }
@@ -45,7 +74,55 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public int size() {
-        return length;
+        return size;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.data == o) {
+                return true;
+            }
+
+            temp = temp.next;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        Node temp = head;
+        int index = 0;
+        while (temp != null) {
+            if (temp.data == o) {
+                return index;
+            }
+            temp = temp.next;
+            index++;
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        Node temp = tail;
+        int index = size - 1;
+        while (temp != null) {
+            if (temp.data == o) {
+                return index;
+            }
+            temp = temp.previous;
+            index--;
+        }
+        return -1;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
+        size = 0;
     }
 
     @Override
@@ -54,7 +131,7 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     private class MyIterator implements Iterator<T> {
-        MyNode cursor = head;
+        Node cursor = head;
 
         @Override
         public boolean hasNext() {
